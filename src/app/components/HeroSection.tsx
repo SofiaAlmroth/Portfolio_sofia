@@ -9,58 +9,63 @@ function HeroSection() {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-
-    let circleAnimation: GSAPTween | null = null;
-    let textAnimation: GSAPTween | null = null;
-    let scrollAnimation: GSAPTimeline | null = null;
-
+    // Initial circle animation: Expand to 40rem on page load
     if (circleRef.current) {
-      circleAnimation = gsap.fromTo(
+      gsap.fromTo(
         circleRef.current,
         { opacity: 0, scale: 0 },
         {
           opacity: 1,
-          scale: 1,
-          duration: 5,
+          scale: 1, // Initial size (40rem)
+          duration: 5, // Smooth and longer initial expansion
           ease: "back.out(1.7)",
         }
       );
     }
 
-    textAnimation = gsap.to(".name-animation span", {
+    // Text animation
+    gsap.to(".name-animation span", {
       opacity: 1,
       duration: 2,
-      stagger: 0.2, // Animates each letter one after another
+      stagger: 0.2,
       ease: "power2.out",
     });
 
-    // Scroll-triggered animation to expand the circle
+    // Scroll-triggered animation: Expand circle as you scroll down
+    ScrollTrigger.create({
+      trigger: ".hero",
+      start: "top top", // Start as soon as scrolling starts
+      end: "+=" + window.innerHeight * 1, // Circle fully expands when the next section hits the top of the viewport
+      scrub: 0.5, // Slow and smooth expansion in sync with scroll
+      onUpdate: (self) => {
+        const scale = 1 + 9 * self.progress; // Calculates scale based on scroll progress
+        gsap.to(circleRef.current, {
+          scale: scale,
+          duration: 2,
+          overwrite: "auto",
+          ease: "expo.out", // No easing for a linear scale transition
+        });
+      },
+      // onScrubComplete: (self) => {
+      //   const scale = 1 + 9 * self.progress;
+      //   gsap.to(circleRef.current, {
+      //     scale: scale, // Apply the final scale when scrolling stops
+      //     duration: 2, // Bounce effect duration
+      //     ease: "elastic.out(1, 0.3)", // Elastic bounce effect
+      //   });
+      // },
+      onLeaveBack: (self) => {
+        gsap.to(circleRef.current, {
+          scale: 1, // Shrink back to 40rem size
+          duration: 2, // Smooth shrinking animation
 
-    scrollAnimation = gsap
-      .timeline({
-        scrollTrigger: {
-          trigger: ".hero", // The section to pin and trigger the animation
-          start: "center center",
-          scrub: 1.5,
-          pin: true,
-          end: "+=" + window.innerHeight * 2.5,
-          markers: true,
-        },
-      })
-      .to(circleRef.current, {
-        scale: 10, // Expands the circle to cover the screen
-        duration: 15,
-        ease: "power2.out",
-      });
-
-    // Cleanup function
+          ease: "expo.out",
+        });
+      },
+    });
+    // Cleanup function to remove GSAP instances and ScrollTriggers
     return () => {
-      // Kill animations to clean up GSAP instances
-      if (circleAnimation) circleAnimation.kill();
-      if (textAnimation) textAnimation.kill();
-      if (scrollAnimation) scrollAnimation.kill();
-
-      // Cleanup ScrollTrigger
+      gsap.killTweensOf(circleRef.current);
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
@@ -74,7 +79,7 @@ function HeroSection() {
   }
 
   return (
-    <section className="min-h-screen text-black flex items-center justify-center">
+    <section className="min-h-screen text-black flex items-center justify-center hero">
       <div className="grid place-items-center w-full">
         <div className="relative w-full p-6 text-left z-10 max-w-[80%]">
           <h1
@@ -102,10 +107,22 @@ function HeroSection() {
           </p>
         </div>
       </div>
+
+      {/* Directly render the circle as a div */}
       <div
         ref={circleRef}
-        className="absolute w-[40rem] h-[40rem] bg-[#E3313C] rounded-full z-0"
+        className="absolute bg-gradient-radial from-[#3939FF] to-[#5B5BFF] rounded-full z-0"
+        style={{
+          width: "40rem",
+          height: "40rem",
+          transformOrigin: "center center",
+        }}
       ></div>
+      {/* <ForwardedCircle
+        ref={circleRef}
+        color="#E3313C"
+        size="40rem" // Adjust size as needed
+      /> */}
     </section>
   );
 }
