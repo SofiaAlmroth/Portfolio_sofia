@@ -12,31 +12,52 @@ function AboutSection({ sectionId }: Props) {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const spans = document.querySelectorAll(
-      `#${sectionId} .text-animation span`
-    );
-    console.log(`Spans found in ${sectionId}:`, spans);
+    const textElement = document.querySelector(`#${sectionId} .text-animation`);
+    const imageElement = document.querySelector(`#${sectionId} svg`);
 
-    if (spans.length > 0) {
-      // Ensure spans exist before animating
+    if (textElement) {
       gsap.fromTo(
-        spans,
+        textElement,
         {
-          opacity: 0, // Start with the text invisible
-          yPercent: 10, // Start 100px below its original position
+          yPercent: 500, // Start below the element
+          scale: 1.2,
         },
         {
-          opacity: 1, // Fade in
-          yPercent: -10, // Move to its original position
-          stagger: 0.01, // Stagger each span animation slightly
-          ease: "none", // Easing for a nice elastic effect
-          delay: 1,
-          duration: 1, // Duration of the animation
+          yPercent: -500,
+          ease: "back.out(1.7)",
+          duration: 2, // Duration of the animation
+          // scale: 1,
           scrollTrigger: {
             trigger: `#${sectionId}`,
-            start: "top 80%",
+            start: "top 90%",
+            end: "bottom top",
+            scrub: 2,
+            markers: true,
+            onEnter: () => {
+              console.log(`Entering section: ${sectionId}`);
+            },
+          },
+        }
+      );
+    } else {
+      console.error(`No text element found in ${sectionId} for animation.`);
+    }
+
+    if (imageElement) {
+      gsap.fromTo(
+        imageElement,
+        {
+          yPercent: 50, // Start below the element
+        },
+        {
+          yPercent: -50, // Move to its original position
+          ease: "back.out(1.7)",
+          duration: 2, // Duration of the animation
+          scrollTrigger: {
+            trigger: `#${sectionId}`,
+            start: "top 90%",
             end: "bottom top", // Continue the movement until the section leaves the viewport
-            scrub: 1, // Tie the animation to the scroll position for smooth movement
+            scrub: 2, // Tie the animation to the scroll position for smooth movement
             markers: true, // Debug markers
             onEnter: () => {
               console.log(`Entering section: ${sectionId}`);
@@ -45,17 +66,9 @@ function AboutSection({ sectionId }: Props) {
         }
       );
     } else {
-      console.error(`No spans found in ${sectionId} for animation.`);
+      console.error(`No image element found in ${sectionId} for animation.`);
     }
   }, [sectionId]);
-
-  function renderLetters(text: string, key: string) {
-    return text.split("").map((letter, index) => (
-      <span key={key + index} className="inline-block ">
-        {letter === " " ? "\u00A0" : letter}
-      </span>
-    ));
-  }
 
   return (
     <section
@@ -71,7 +84,7 @@ function AboutSection({ sectionId }: Props) {
               viewBox="0 0 600 600"
               width="100%"
               height="100%"
-              className="absolute top-0 left-0"
+              className="image-animation absolute top-0 left-0"
             >
               <defs>
                 <clipPath id="clippath">
@@ -91,15 +104,15 @@ function AboutSection({ sectionId }: Props) {
           </div>
         </div>
         {/* Text Column */}
-        <div className="w-full md:w-1/2 flex flex-col items-center justify-center text-animation">
+        <div className="w-full md:w-1/2 flex flex-col items-center justify-center ">
           <p
-            className="m-0  text-2xl md:text-lg split"
+            className="m-0 text-animation text-2xl md:text-lg split"
             style={{
               lineHeight: "1",
               fontSize: "clamp(2rem, 3vw, 5rem)", // Responsive font size using clamp
             }}
           >
-            {renderLetters("SOFTWARE DEVELOPER", "Title")}
+            Software Developer
           </p>
         </div>
       </div>

@@ -4,7 +4,7 @@ interface Props {
   sectionId: string;
 }
 
-function AboutSection({ sectionId }: Props) {
+function AboutSectionTwo({ sectionId }: Props) {
   return (
     <section
       className="min-h-screen text-white flex flex-col items-center  relative about section"
@@ -28,4 +28,4 @@ function AboutSection({ sectionId }: Props) {
   );
 }
 
-export default AboutSection;
+export default AboutSectionTwo;
