@@ -12,25 +12,27 @@ function AboutSection({ sectionId }: Props) {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const textElement = document.querySelector(`#${sectionId} .text-animation`);
+    const textContainerElement = document.querySelector(
+      `#${sectionId} .text-animation`
+    );
     const imageElement = document.querySelector(`#${sectionId} svg`);
 
-    if (textElement) {
+    if (textContainerElement) {
       gsap.fromTo(
-        textElement,
+        textContainerElement,
         {
-          yPercent: 500, // Start below the element
+          yPercent: 1000, // Start below the element
           scale: 1.2,
         },
         {
-          yPercent: -500,
+          yPercent: 0,
+          scale: 1, // Return to the original scale
           ease: "back.out(1.7)",
-          duration: 2, // Duration of the animation
           // scale: 1,
           scrollTrigger: {
             trigger: `#${sectionId}`,
-            start: "top 90%",
-            end: "bottom top",
+            start: "top center",
+            end: "center center",
             scrub: 2,
             markers: true,
             onEnter: () => {
@@ -47,16 +49,17 @@ function AboutSection({ sectionId }: Props) {
       gsap.fromTo(
         imageElement,
         {
-          yPercent: 50, // Start below the element
+          yPercent: 200, // Start below the element
+          scale: 1.2,
         },
         {
-          yPercent: -50, // Move to its original position
+          yPercent: 0, // Move to its original position
+          scale: 1, // Return to the original scale
           ease: "back.out(1.7)",
-          duration: 2, // Duration of the animation
           scrollTrigger: {
             trigger: `#${sectionId}`,
-            start: "top 90%",
-            end: "bottom top", // Continue the movement until the section leaves the viewport
+            start: "top center",
+            end: "center center", // Continue the movement until the section leaves the viewport
             scrub: 2, // Tie the animation to the scroll position for smooth movement
             markers: true, // Debug markers
             onEnter: () => {
@@ -72,8 +75,8 @@ function AboutSection({ sectionId }: Props) {
 
   return (
     <section
-      id={sectionId}
-      className="min-h-screen text-white flex flex-col items-center justify-center relative section"
+      id="about-section-1"
+      className=" text-white flex flex-col items-center justify-center relative section"
       data-color="#FEBAED"
     >
       <div className="container mx-auto flex flex-col md:flex-row items-center justify-center">
@@ -104,11 +107,10 @@ function AboutSection({ sectionId }: Props) {
           </div>
         </div>
         {/* Text Column */}
-        <div className="w-full md:w-1/2 flex flex-col items-center justify-center ">
+        <div className="w-full md:w-1/2 flex flex-col items-center justify-center text-container ">
           <p
-            className="m-0 text-animation text-2xl md:text-lg split"
+            className="text-animation m-0 text-2xl md:text-lg "
             style={{
-              lineHeight: "1",
               fontSize: "clamp(2rem, 3vw, 5rem)", // Responsive font size using clamp
             }}
           >

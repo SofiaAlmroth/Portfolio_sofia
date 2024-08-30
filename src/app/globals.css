@@ -8,7 +8,19 @@
   --background-end-rgb: 239, 232, 224; /* Same as start color since there's no gradient */
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   color: rgb(var(--foreground-rgb)); /* Text color */
   background: rgb(var(--background-start-rgb)); /* Base background color */
+}
+
+#about-section-1 {
+  height: 50vh; /* 50% of the viewport height */
+}
+
+#about-section-2 {
+  height: 50vh; /* 50% of the viewport height */
 }

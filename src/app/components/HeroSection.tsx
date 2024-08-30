@@ -26,7 +26,7 @@ function HeroSection() {
     // Text animation
     gsap.to(".name-animation span", {
       opacity: 1,
-      duration: 2,
+      duration: 0.5,
       stagger: 0.2,
       ease: "power2.out",
     });
