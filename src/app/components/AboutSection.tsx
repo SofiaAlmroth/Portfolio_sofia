@@ -2,7 +2,7 @@
 
 import gsap from "gsap";
 import { useEffect } from "react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 interface Props {
   sectionId: string;

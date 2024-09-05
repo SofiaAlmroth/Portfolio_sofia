@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 function HeroSection() {
   const circleRef = useRef<HTMLDivElement>(null);
@@ -46,19 +46,11 @@ function HeroSection() {
           ease: "expo.out", // No easing for a linear scale transition
         });
       },
-      // onScrubComplete: (self) => {
-      //   const scale = 1 + 9 * self.progress;
-      //   gsap.to(circleRef.current, {
-      //     scale: scale, // Apply the final scale when scrolling stops
-      //     duration: 2, // Bounce effect duration
-      //     ease: "elastic.out(1, 0.3)", // Elastic bounce effect
-      //   });
-      // },
+
       onLeaveBack: (self) => {
         gsap.to(circleRef.current, {
           scale: 1, // Shrink back to 40rem size
           duration: 2, // Smooth shrinking animation
-
           ease: "expo.out",
         });
       },
@@ -111,18 +103,13 @@ function HeroSection() {
       {/* Directly render the circle as a div */}
       <div
         ref={circleRef}
-        className="absolute bg-gradient-radial from-[#3939FF] to-[#5B5BFF] rounded-full z-0"
+        className="absolute bg-gradient-to-b from-[#3939FF] via-[#f77bd8] to-[#E3313C] rounded-full z-0"
         style={{
           width: "40rem",
           height: "40rem",
           transformOrigin: "center center",
         }}
       ></div>
-      {/* <ForwardedCircle
-        ref={circleRef}
-        color="#E3313C"
-        size="40rem" // Adjust size as needed
-      /> */}
     </section>
   );
 }
