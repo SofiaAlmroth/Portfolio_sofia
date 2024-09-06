@@ -3,15 +3,52 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { Fira_Sans_Extra_Condensed } from "next/font/google";
 
 function ProjectsSection() {
   const sectionRef = useRef(null);
   const triggerRef = useRef(null);
+  const headingRef = useRef(null); // Ref for the <h1> element
 
   gsap.registerPlugin(ScrollTrigger);
 
   useEffect(() => {
+    //h1 animation
+    const header = gsap.fromTo(
+      headingRef.current,
+      {
+        y: 20,
+        opacity: 0,
+        scale: 1.2,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        scale: 1,
+        ease: "power1.out",
+        scrollTrigger: {
+          trigger: triggerRef.current, // Trigger based on the horizontal scroll section
+          start: "top top", // Start animation when horizontal scroll starts
+          end: "bottom top", // End animation just before leaving the section
+          scrub: true,
+          onLeave: () =>
+            gsap.to(headingRef.current, {
+              opacity: 0,
+              y: -20,
+              duration: 0.5,
+              ease: "power1.inOut",
+            }), // Fade out when scrolling past the section
+          onEnterBack: () =>
+            gsap.to(headingRef.current, {
+              opacity: 1,
+              y: 0,
+              duration: 0.5,
+              ease: "power1.out",
+            }), // Fade in when scrolling back into the section
+        },
+      }
+    );
+
     const pin = gsap.fromTo(
       sectionRef.current,
       {
@@ -33,13 +70,14 @@ function ProjectsSection() {
 
     return () => {
       pin.kill();
+      header.kill();
     };
   }, []);
 
   return (
     <section className="overflow-hidden">
       <div ref={triggerRef}>
-        <div className="mt-48">
+        <div ref={headingRef} className="mt-48">
           <h1 className="text-center text-7xl font-extrabold text-black">
             Projects
           </h1>
