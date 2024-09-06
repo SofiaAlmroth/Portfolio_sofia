@@ -5,59 +5,63 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 function Contact() {
-  const sectionRef = useRef(null);
-  const circleRef = useRef(null); // Reference to the circle
+  const sectionRef = useRef(null); // Ref for the section
+  const contentRef = useRef(null); // Ref for the content
 
   gsap.registerPlugin(ScrollTrigger);
 
   useEffect(() => {
-    const curve = gsap.fromTo(
-      circleRef.current,
+    // Background color transition as you scroll into the section
+    gsap.fromTo(
+      sectionRef.current,
       {
-        scaleX: 1, // Initial horizontal scale
-        scaleY: 1, // Initial vertical scale
-        autoAlpha: 0, // Initial opacity (autoAlpha = visibility + opacity)
+        backgroundColor: "#EFE8E0", // Starting background color
       },
       {
-        scaleX: 100, // Stretch the circle horizontally to flatten it out
-        scaleY: 20, // Shrink the circle vertically
-        autoAlpha: 10, // Fade in smoothly
+        backgroundColor: "#000000", // Final background color
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: "top 90%", // Start the animation before the section fully enters the viewport
-          end: "bottom top", // End when the section is fully scrolled past
-          scrub: true, // Smoothly follow the scroll
-          markers: true, // For debugging
-          pin: true,
-          pinSpacing: false,
+          start: "top 80%", // When the section starts entering the viewport
+          end: "top 30%", // When the section is fully visible
+          scrub: true, // Smooth transition tied to the scroll
         },
       }
     );
 
-    return () => {
-      curve.kill();
-    };
+    // Content (Text) Fade and Slide In Animation
+    gsap.fromTo(
+      contentRef.current,
+      {
+        opacity: 0, // Start hidden
+        y: 50, // Start slightly lower than the final position
+      },
+      {
+        opacity: 1, // Fade in
+        y: 0, // Slide to final position
+        duration: 1.5, // Animation duration
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%", // When the section starts entering the viewport
+          end: "top 50%", // When the section is fully in view
+          scrub: true, // Tie the animation to the scroll
+        },
+      }
+    );
   }, []);
-
   return (
-    <>
-      <section
-        ref={sectionRef}
-        className="h-[60vh] text-white flex justify-center items-center relative"
-      >
-        {/* Circle Div with Tailwind classes */}
-        <div
-          ref={circleRef}
-          className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-black rounded-full"
-          style={{
-            width: "100px",
-            height: "100px",
-          }}
-        ></div>
-
-        <h1 className="mt-7 text-white text-2xl">Contact me</h1>
-      </section>
-    </>
+    <section
+      ref={sectionRef}
+      className="h-[100vh] text-white flex justify-center items-center relative"
+    >
+      {/* Contact content */}
+      <div ref={contentRef} className="text-center">
+        <h1 className="text-5xl font-bold">Contact me</h1>
+        <p className="mt-4 text-lg">
+          Let's work together and create something amazing.
+        </p>
+      </div>
+    </section>
   );
 }
 
