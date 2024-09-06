@@ -29,8 +29,8 @@ function AboutSectionTwo({ sectionId }: Props) {
 
       tl.fromTo(
         chars,
-        { opacity: 0, y: 50 }, // Start with characters invisible and below their position
-        { opacity: 1, y: 0, color: "#FEBAED", stagger: 0.05 } // Animate to visible and in place
+        { opacity: 0.2, y: 0, color: "#FEBAED" }, // Start with characters invisible and below their position
+        { opacity: 1, y: 0, color: "#ffffff", stagger: 0.05 } // Animate to visible and in place
       );
     }
   }, [sectionId]);
