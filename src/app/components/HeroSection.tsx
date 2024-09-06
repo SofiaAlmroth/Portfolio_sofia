@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 function HeroSection() {
   const circleRef = useRef<HTMLDivElement>(null);
+  const textContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -23,12 +24,37 @@ function HeroSection() {
       );
     }
 
-    // Text animation
-    gsap.to(".name-animation span", {
-      opacity: 1,
-      duration: 0.5,
-      stagger: 0.2,
-      ease: "power2.out",
+    //text animation
+    gsap.fromTo(
+      ".name-animation span",
+      {
+        opacity: 0,
+        y: 50, // Slide in from below
+        scale: 0.8, // Start slightly smaller
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1, // Return to normal size
+        duration: 0.3, // Quick duration
+        stagger: 0.1, // Fast stagger between letters
+        ease: "power3.out", // Snappy easing for a dynamic feel
+      }
+    );
+
+    // Scroll-triggered exit animation (move text to the right)
+    ScrollTrigger.create({
+      trigger: ".hero",
+      start: "top top",
+      end: "bottom top",
+      scrub: true,
+      onUpdate: (self) => {
+        gsap.to(textContainerRef.current, {
+          x: self.progress * 1000, // Move text to the right based on scroll progress (adjusted for more movement)
+          ease: "power3.out", // Snappy easing
+          zIndex: 20,
+        });
+      },
     });
 
     // Scroll-triggered animation: Expand circle as you scroll down
@@ -72,8 +98,8 @@ function HeroSection() {
 
   return (
     <section className="min-h-screen text-black flex items-center justify-center hero">
-      <div className="grid place-items-center w-full">
-        <div className="relative w-full p-6 text-left z-10 max-w-[80%]">
+      <div ref={textContainerRef} className="grid place-items-center w-full">
+        <div className="relative w-full p-6 text-left z-20 max-w-[80%]">
           <h1
             className="font-bold leading-tight name-animation"
             style={{
