@@ -1,7 +1,7 @@
 "use client";
 
 import gsap from "gsap";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 interface Props {
@@ -9,73 +9,67 @@ interface Props {
 }
 
 function AboutSection({ sectionId }: Props) {
+  const textRef = useRef<HTMLDivElement>(null); // Ref for the text container
+  const imageRef = useRef<SVGSVGElement>(null); // Ref for the SVG image
+
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
-    const textContainerElement = document.querySelector(
-      `#${sectionId} .text-animation`
-    );
-    const imageElement = document.querySelector(`#${sectionId} svg`);
-
-    if (textContainerElement) {
+    // Text Animation
+    if (textRef.current) {
       gsap.fromTo(
-        textContainerElement,
+        textRef.current,
         {
-          yPercent: 1000, // Start below the element
+          yPercent: 1000, // Initial state
           scale: 1.2,
         },
         {
           yPercent: 0,
-          scale: 1, // Return to the original scale
+          scale: 1, // Final state
           ease: "back.out(1.7)",
-          // scale: 1,
           scrollTrigger: {
             trigger: `#${sectionId}`,
             start: "top center",
             end: "center center",
             scrub: 2,
-            markers: true,
-            onEnter: () => {
-              console.log(`Entering section: ${sectionId}`);
-            },
+            markers: false,
           },
         }
       );
-    } else {
-      console.error(`No text element found in ${sectionId} for animation.`);
     }
 
-    if (imageElement) {
+    // Image Animation
+    if (imageRef.current) {
       gsap.fromTo(
-        imageElement,
+        imageRef.current,
         {
-          yPercent: 200, // Start below the element
+          yPercent: 200, // Initial state
           scale: 1.2,
         },
         {
-          yPercent: 0, // Move to its original position
-          scale: 1, // Return to the original scale
+          yPercent: 0,
+          scale: 1, // Final state
           ease: "back.out(1.7)",
           scrollTrigger: {
             trigger: `#${sectionId}`,
             start: "top center",
-            end: "center center", // Continue the movement until the section leaves the viewport
-            scrub: 2, // Tie the animation to the scroll position for smooth movement
-            markers: true, // Debug markers
-            onEnter: () => {
-              console.log(`Entering section: ${sectionId}`);
-            },
+            end: "center center",
+            scrub: 2,
+            markers: false,
           },
         }
       );
-    } else {
-      console.error(`No image element found in ${sectionId} for animation.`);
     }
+
+    // Cleanup function to remove GSAP animations
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
   }, [sectionId]);
 
   return (
     <section
-      id="about-section-1"
+      id={sectionId}
       className=" text-white flex flex-col items-center justify-center relative section"
       data-color="#FEBAED"
     >
@@ -83,11 +77,15 @@ function AboutSection({ sectionId }: Props) {
         <div className="w-full md:w-1/2 flex justify-center md:justify-center md:mb-0">
           <div className="relative w-[40rem] h-[40rem] ">
             <svg
+              ref={imageRef}
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 600 600"
               width="100%"
               height="100%"
               className="image-animation absolute top-0 left-0"
+              style={{
+                transform: "scale(1.2)", // Initial style to match GSAP animation
+              }}
             >
               <defs>
                 <clipPath id="clippath">
@@ -109,6 +107,7 @@ function AboutSection({ sectionId }: Props) {
         {/* Text Column */}
         <div className="w-full md:w-1/2 flex flex-col items-center justify-center text-container ">
           <p
+            ref={textRef}
             className="text-animation m-0 text-2xl md:text-lg "
             style={{
               fontSize: "clamp(2rem, 3vw, 5rem)", // Responsive font size using clamp

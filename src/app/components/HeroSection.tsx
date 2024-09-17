@@ -83,8 +83,13 @@ function HeroSection() {
     });
     // Cleanup function to remove GSAP instances and ScrollTriggers
     return () => {
-      gsap.killTweensOf(circleRef.current);
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      if (circleRef.current) {
+        gsap.killTweensOf(circleRef.current); // Kill only the specific tween
+      }
+      if (textContainerRef.current) {
+        gsap.killTweensOf(textContainerRef.current); // Same for text container
+      }
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill()); // Kill all ScrollTriggers
     };
   }, []);
 
@@ -133,6 +138,8 @@ function HeroSection() {
         style={{
           width: "40rem",
           height: "40rem",
+          transform: "scale(1)", // Initial scale to match GSAP animation
+          opacity: 0, // This prevents flickering before GSAP kicks in
           transformOrigin: "center center",
         }}
       ></div>

@@ -9,9 +9,8 @@ function ProjectsSection() {
   const triggerRef = useRef(null);
   const headingRef = useRef(null); // Ref for the <h1> element
 
-  gsap.registerPlugin(ScrollTrigger);
-
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     //h1 animation
     const header = gsap.fromTo(
       headingRef.current,
@@ -71,6 +70,7 @@ function ProjectsSection() {
     return () => {
       pin.kill();
       header.kill();
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
 

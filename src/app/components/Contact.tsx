@@ -8,11 +8,10 @@ function Contact() {
   const sectionRef = useRef(null); // Ref for the section
   const contentRef = useRef(null); // Ref for the content
 
-  gsap.registerPlugin(ScrollTrigger);
-
   useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
     // Background color transition as you scroll into the section
-    gsap.fromTo(
+    const bgColorAnim = gsap.fromTo(
       sectionRef.current,
       {
         backgroundColor: "#EFE8E0", // Starting background color
@@ -29,7 +28,7 @@ function Contact() {
     );
 
     // Content (Text) Fade and Slide In Animation
-    gsap.fromTo(
+    const contentAnim = gsap.fromTo(
       contentRef.current,
       {
         opacity: 0, // Start hidden
@@ -48,6 +47,11 @@ function Contact() {
         },
       }
     );
+    return () => {
+      bgColorAnim.kill();
+      contentAnim.kill();
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
   }, []);
   return (
     <section
